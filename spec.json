@@ -1,0 +1,359 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Orval Test API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {
+      "userDtoInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email"
+        ]
+      },
+      "errorDtoInput": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "message",
+          "statusCode"
+        ]
+      },
+      "postDtoInput": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "postId",
+          "title"
+        ]
+      },
+      "userDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email"
+        ],
+        "additionalProperties": false
+      },
+      "errorDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "message",
+          "statusCode"
+        ],
+        "additionalProperties": false
+      },
+      "postDto": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "postId",
+          "title"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "operationId": "login",
+        "summary": "Login",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Invalid credentials",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/errorDto"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal server error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/errorDto"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "get-user",
+        "summary": "Get the current user",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not signed in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "User not signed in",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/errorDto"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal server error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/errorDto"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts": {
+      "post": {
+        "operationId": "upload",
+        "summary": "Upload a file",
+        "tags": [
+          "Post"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "title",
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/postDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not signed in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "User not signed in",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/errorDto"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal server error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/errorDto"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{postId}/thumbnail": {
+      "get": {
+        "operationId": "get-thumbnail",
+        "summary": "Get a post's thumbnail",
+        "tags": [
+          "Post"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "name": "postId",
+            "required": true,
+            "description": "The ID of the post"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "image/jpeg": {
+                "schema": {}
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "description": "Internal server error",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/errorDto"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
