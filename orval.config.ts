@@ -11,11 +11,18 @@ export default defineConfig({
       target: "./src/api/generated/",
       schemas: "./src/api/generated/schemas/",
       client: "react-query",
-      httpClient: "axios",
+      httpClient: "fetch", // or "axios"
       mock: true,
       clean: true,
       formatter: "biome",
       namingConvention: "kebab-case",
+      // when using axios with custom instance
+      // override: {
+      //   mutator: {
+      //     path: "./src/api/custom-instance.ts",
+      //     name: "customInstance",
+      //   },
+      // }
     },
   },
 });

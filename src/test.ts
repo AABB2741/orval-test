@@ -1,7 +1,6 @@
 import { getUser, useLogin } from "./api/generated/auth/auth";
 import { upload } from "./api/generated/post/post";
 
-
 const mutation = useLogin();
 mutation.mutateAsync({
   data: {
@@ -14,6 +13,8 @@ const data = await getUser();
 
 if (data.status === 200) {
   console.log(data.data.name);
+} else {
+  console.error(data.data.message)
 }
 
 await upload({
